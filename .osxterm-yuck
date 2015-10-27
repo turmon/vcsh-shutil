@@ -1,0 +1,32 @@
+#!/usr/bin/perl
+# most recent osxterm-choose-color info
+# as of Mon Oct 26 13:09:37 PDT 2015 for /dev/ttys017
+# r = 105, g = 89, b = 205.
+# gray = 131.67 compared to 130
+# color is SlateBlue3, text_color is 0,0,0
+#
+# execute this file to remove the color from the list
+#
+use File::Copy;
+$rgbfile = "/Users/turmon/unix/lib/rgb.txt";
+$tmpfile = "/tmp/dt-yuck-82579-rgb.txt";
+# juggle files
+copy("$rgbfile", "$tmpfile") or die "no $rgbfile; exiting without changes.";
+open(FP, "$tmpfile") or die "copied file $tmpfile not found; exiting without changes";
+open(FO, ">$rgbfile") or die "rgb file $rgbfile not writable; check it for integrity now!";
+# copy FP to FO, except for the match(es)
+while (<FP>) {
+  print FO unless /^\s*105\s+89\s+205\s/;
+}
+# clean up
+close(F0);
+close(FP);
+unlink "$tmpfile";
+# add to banishment list (fail silent)
+if (open(FB, ">>/Users/turmon/unix/lib/rgb.banish")) { 
+  print FB "# ", `date`;
+  print FB "105  89 205		SlateBlue3\n";
+  close(FB);
+}
+# say what happened
+print "SlateBlue3 banished from $rgbfile\n";
